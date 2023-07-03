@@ -36,7 +36,8 @@ def get_weather():
         clock.config(text=current_time)
 
         # Weather API
-        api = f"THE_APIIII!"
+        api = f"https://api.openweathermap.org/data/2.5/onecall?lat={location.latitude}&lon={location.longitude}" \
+              "&units=metric&exclude=hourly&appid=aaf245dfb3c5b0316bf26e316b4b2117"
 
         try:
             json_data = requests.get(api).json()
@@ -47,11 +48,11 @@ def get_weather():
             wind = current_weather.get("wind_speed")
             description = current_weather.get("weather", [{}])[0].get("description")
 
-            t.config(text=f"{temp} °C" if temp is not None else "N/A")
-            h.config(text=f"{humidity} %" if humidity is not None else "N/A")
-            p.config(text=f"{pressure} hPa" if pressure is not None else "N/A")
-            w.config(text=f"{wind} m/s" if wind is not None else "N/A")
-            d.config(text=description if description is not None else "N/A")
+            t.config(text=f"{str(temp)} °C" if temp is not None else "N/A")
+            h.config(text=f"{str(humidity)} %" if humidity is not None else "N/A")
+            p.config(text=f"{str(pressure)} hPa" if pressure is not None else "N/A")
+            w.config(text=f"{str(wind)} m/s" if wind is not None else "N/A")
+            d.config(text=str(description) if description is not None else "N/A")
 
         except requests.RequestException:
             messagebox.showerror("Error", "Failed to retrieve weather data.")
@@ -62,7 +63,6 @@ def get_weather():
         messagebox.showerror("Error", "Invalid city name.")
     except Exception as e:
         messagebox.showerror("Error", str(e))
-
 
 
 def create_gui():
@@ -138,18 +138,24 @@ def create_gui():
     long_lat.place(x=700, y=70)
 
     # Weather details
-    t = Label(root, font=("poppins", 11), fg="#EEE8CD", bg="#203243")
-    t.place(x=150, y=120)
-    h = Label(root, font=("poppins", 11), fg="#EEE8CD", bg="#203243")
-    h.place(x=150, y=140)
-    p = Label(root, font=("poppins", 11), fg="#EEE8CD", bg="#203243")
-    p.place(x=150, y=160)
-    w = Label(root, font=("poppins", 11), fg="#EEE8CD", bg="#203243")
-    w.place(x=150, y=180)
-    d = Label(root, font=("poppins", 11), fg="#EEE8CD", bg="#203243")
-    d.place(x=150, y=200)
+    t = Label(root, text="N/A", font=("poppins", 20, "bold"), fg="white", bg="#203243")
+    t.place(x=180, y=120)
+
+    h = Label(root, text="N/A", font=("poppins", 20, "bold"), fg="white", bg="#203243")
+    h.place(x=180, y=140)
+
+    p = Label(root, text="N/A", font=("poppins", 20, "bold"), fg="white", bg="#203243")
+    p.place(x=180, y=160)
+
+    w = Label(root, text="N/A", font=("poppins", 20, "bold"), fg="white", bg="#203243")
+    w.place(x=180, y=180)
+
+    d = Label(root, text="N/A", font=("poppins", 20, "bold"), fg="white", bg="#203243")
+    d.place(x=180, y=200)
+
+    # Update every 5 minutes
+    root.after(300000, get_weather)
 
 
-if __name__ == '__main__':
-    create_gui()
-    root.mainloop()
+create_gui()
+root.mainloop()
