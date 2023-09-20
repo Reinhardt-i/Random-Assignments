@@ -1,7 +1,8 @@
 import csv
 
 csv_file = "Sports Week/IICT_Director_s_Sports_week_Player_Application_Form_Responses.csv"
-interested_players = []
+interested_players = {}
+# To avoid duplication, using dict to store player information (reg as the key)
 
 with open(csv_file, mode="r", encoding="utf-8") as file:
     csv_reader = csv.reader(file)
@@ -14,10 +15,11 @@ with open(csv_file, mode="r", encoding="utf-8") as file:
         reg = row[3].strip()
 
         if "chess" in interested_segment:
-            interested_players.append(f"Name: {name}, Phone: {phone}, Registration: {reg}")
+            if reg not in interested_players:
+                interested_players[reg] = f"Name: {name}, Phone: {phone}, Registration: {reg}"
 
-with open("Sports Week/chess_players.txt", "w") as output_file:
-    for player_info in interested_players:
+with open("Sports Week/1.chess_players.txt", "w") as output_file:
+    for player_info in interested_players.values():
         output_file.write(player_info + "\n")
 
-print("Interested players' information has been written to chess_players.txt.")
+print("Interested players' information has been written to ludu_players.txt.")
